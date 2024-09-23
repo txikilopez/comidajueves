@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar comida Jueves 26</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Firebase setup -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+    <h1>Confirmar comida Jueves 26?</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Lomit's</th>
+                <th>Rishtedar</th>
+            </tr>
+        </thead>
+        <tbody id="confirmation-table">
+            <!-- Player rows will be dynamically added here -->
+        </tbody>
+    </table>
+    <h2>Otro restaurant?</h2>
+    <form id="add-column-form">
+        <input type="text" id="new-column" placeholder="Nombre de restaurante" required>
+        <button type="submit">Añadir restaurante</button>
+    </form>
+    <h2>Mas personas?</h2>
+    <form id="add-player-form">
+        <input type="text" id="new-player" placeholder="Nombre de persona" required>
+        <button type="submit">Añadir persona</button>
+    </form>
+    <button id="reset-answers">Borrar todas las selecciones</button>
+
+    <script src="jsfile.js"></script>
+</body>
+</html>
