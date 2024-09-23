@@ -19,12 +19,22 @@ const fixedRoster = [
     'Flaco', 'Diego Campos', 'Fralo', 'Sama', 'Tom', 'Zurba', 'Kinast', 'Lucas', 'ATL'
 ];
 
-let columns = ['Lomit\'s', 'Rishtedar'];
+let columns = ['Lomits', 'Rishtedar'];
 
 // Function to render the table
 function renderTable() {
     const tableBody = document.getElementById('confirmation-table');
+    const tableHead = document.querySelector('thead tr');
+    
     tableBody.innerHTML = '';
+    tableHead.innerHTML = '<th>Nombre</th><th>Lomits</th><th>Rishtedar</th>'; // Clear previous headers except for baseline
+
+    // Add extra restaurant headers
+    columns.slice(2).forEach(col => {
+        const th = document.createElement('th');
+        th.textContent = col;
+        tableHead.appendChild(th);
+    });
 
     fixedRoster.forEach(name => {
         const row = document.createElement('tr');
@@ -84,11 +94,21 @@ function toggleSelection(name, col, cell) {
 document.getElementById('add-column-form').addEventListener('submit', function(e) {
     e.preventDefault();
     const newColumn = document.getElementById('new-column').value;
-    if (newColumn) {
+    if (newColumn && !columns.includes(newColumn)) { // Prevent duplicates
         columns.push(newColumn);
+        db.ref('columns').set(columns); // Save columns to the database
         renderTable();
     }
     document.getElementById('new-column').value = '';
+});
+
+// Load columns from the database on initialization
+db.ref('columns').once('value').then(snapshot => {
+    const dbColumns = snapshot.val();
+    if (dbColumns) {
+        columns = [...new Set([...columns, ...dbColumns])]; // Ensure default columns are included
+    }
+    renderTable();
 });
 
 // Add new player (row)
