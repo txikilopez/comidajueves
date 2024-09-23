@@ -27,12 +27,19 @@ function renderTable() {
     const tableHead = document.querySelector('thead tr');
     
     tableBody.innerHTML = '';
-    tableHead.innerHTML = '<th>Nombre</th><th>Lomits</th><th>Rishtedar</th>'; // Clear previous headers except for baseline
+    tableHead.innerHTML = '<th>Nombre</th>'; // Clear previous headers
 
-    // Add extra restaurant headers
-    columns.slice(2).forEach(col => {
+    // Add restaurant headers with delete option for extra restaurants
+    columns.forEach((col, index) => {
         const th = document.createElement('th');
         th.textContent = col;
+        // Add delete button for new restaurants (not the first two)
+        if (index >= 2) {
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'X';
+            deleteBtn.addEventListener('click', () => removeColumn(col));
+            th.appendChild(deleteBtn);
+        }
         tableHead.appendChild(th);
     });
 
@@ -101,6 +108,21 @@ document.getElementById('add-column-form').addEventListener('submit', function(e
     }
     document.getElementById('new-column').value = '';
 });
+
+// Remove a newly added column
+function removeColumn(col) {
+    columns = columns.filter(c => c !== col); // Remove the column
+    db.ref('columns').set(columns); // Update the database
+    db.ref(`availability`).once('value').then(snapshot => {
+        const data = snapshot.val();
+        for (let player in data) {
+            if (data[player][col]) {
+                db.ref(`availability/${player}/${col}`).remove(); // Remove the column from availability
+            }
+        }
+        renderTable();
+    });
+}
 
 // Load columns from the database on initialization
 db.ref('columns').once('value').then(snapshot => {
